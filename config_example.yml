@@ -1,0 +1,20 @@
+ip_version: "v4" # or v6, dualstack
+# time that should be waited until the next request
+# (there is at least one request to ident.me every time)
+wait_time: 600
+hcloud:
+  token: ""
+  firewall_name: "from-home"
+  firewall_rules:
+    - description: "SSH"
+      direction: "in"
+      protocol: "tcp"
+      port: 22
+    - description: "HTTPS"
+      direction: "in"
+      protocol: "tcp"
+      port: 443
+hdns:
+  token: ""
+  zone_name: "example.com"
+  record_name: "home"
