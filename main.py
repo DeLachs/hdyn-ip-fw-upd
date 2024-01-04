@@ -73,7 +73,7 @@ if __name__ == "__main__":
       description=rule["description"]
     ))
   hdns_headers: dict[str,str] = {
-    'Auth-API-Token': f"{config_content["hdns"]["token"]}",
+    'Auth-API-Token': str(config_content["hdns"]["token"]),
     'Content-Type': 'application/json'
   }
   hdns_zone_name: str = config_content["hdns"]["zone_name"]
