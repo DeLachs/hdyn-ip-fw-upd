@@ -4,7 +4,7 @@ Description=hetzner-dynamic-ip-fw-rule-updater service
 [Service]
 User=1000
 WorkingDirectory=/path/to/project/folder
-ExecStart=/path/to/project/folder/venv/bin/python3 -m main.py
+ExecStart=/path/to/project/folder/venv/bin/python3 -m main
 
 [Install]
 WantedBy=multi-user.target
