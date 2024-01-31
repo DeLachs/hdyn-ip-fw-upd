@@ -1,0 +1,7 @@
+version: '3.9'
+services:
+  hdyn-ip-fw-upd:
+    image: ghcr.io/delachs/hdyn-ip-fw-upd:latest
+    container_name: hdyn-ip-fw-upd
+    volumes:
+      - ./config.yml:/app/config.yml

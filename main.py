@@ -10,7 +10,7 @@ from hcloud.firewalls.domain import FirewallRule
 
 
 # setup logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename='latest.log', encoding='utf8', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
 
 
 def get_ipv4() -> str:
