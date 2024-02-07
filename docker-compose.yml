@@ -3,5 +3,6 @@ services:
   hdyn-ip-fw-upd:
     image: ghcr.io/delachs/hdyn-ip-fw-upd:latest
     container_name: hdyn-ip-fw-upd
+    restart: unless-stopped
     volumes:
       - ./config.yml:/app/config.yml
