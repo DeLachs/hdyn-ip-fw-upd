@@ -1,3 +1,4 @@
+from textwrap import indent
 import requests
 import yaml
 import time
@@ -10,25 +11,40 @@ from hcloud.firewalls.domain import FirewallRule
 
 
 # setup logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(
+  format='%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s: %(message)s',
+  level=logging.INFO
+)
 
 
 def get_ipv4() -> str:
+  ident_me_ipv4: list[str] = ["https://v4.ident.me", "https://v4.tnedi.me"]
   ipv4_address: str = ""
-  try:
-    ipv4_address = requests.get("https://v4.ident.me").text
-  except requests.exceptions.ConnectionError:
-    logging.error("No IPv4 found.")
-  return ipv4_address
+  for ident_me in ident_me_ipv4:
+    try:
+      ipv4_address = requests.get(ident_me).text
+      if ipv4_address != "":
+        return ipv4_address
+    except requests.exceptions.ConnectionError:
+      logging.error(f"No IPv4 found with {ident_me}.")
+  # If no IPv4 can be found the container will exit with a non zero exit code.
+  # The reason is that it probably is a configuration error.
+  exit(1)
 
 
 def get_ipv6() -> str:
+  ident_me_ipv6: list[str] = ["https://v6.ident.me", "https://v6.tnedi.me"]
   ipv6_address: str = ""
-  try:
-    ipv6_address = requests.get("https://v6.ident.me").text
-  except requests.exceptions.ConnectionError:
-    logging.error("No IPv6 found.")
-  return ipv6_address
+  for ident_me in ident_me_ipv6:
+    try:
+      ipv6_address = requests.get(ident_me).text
+      if ipv6_address != "":
+        return ipv6_address
+    except requests.exceptions.ConnectionError:
+      logging.error(f"No IPv6 found with {ident_me}.")
+  # If no IPv6 can be found the container will exit with a non zero exit code.
+  # The reason is that it probably is a configuration error.
+  exit(1)
 
 
 def hdns_record_create_or_update(
@@ -165,6 +181,7 @@ if __name__ == "__main__":
       rule.source_ips = ip_addresses
 
     # update/create firewall
+    #TODO CRITICAL: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
     try:
         hcloud_client.firewalls.set_rules(firewall=hcloud_firewall, rules=hcloud_firewall_rules) # type: ignore
         logging.info("Updated Hetzner Cloud firewall.")
