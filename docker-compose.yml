@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   hdyn-ip-fw-upd:
-    image: test:latest
+    image: ghcr.io/delachs/hdyn-ip-fw-upd:latest
     container_name: hdyn-ip-fw-upd
     restart: unless-stopped
     volumes:
