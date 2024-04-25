@@ -1,4 +1,4 @@
-from textwrap import indent
+from http.client import RemoteDisconnected
 import requests
 import yaml
 import time
@@ -140,6 +140,7 @@ if __name__ == "__main__":
     global hdns_a_record_id
     global hdns_aaaa_record_id
     global hdns_zone_id
+    global hcloud_client
 
     # get the current IPv4 and/or IPv6
     match ip_version:
@@ -181,13 +182,16 @@ if __name__ == "__main__":
       rule.source_ips = ip_addresses
 
     # update/create firewall
-    #TODO CRITICAL: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+    # There can be a RemoteDisconnected exception which means that the client session has run out.
+    # To avoid a exit of the process there will be a new session created if the error happens.
     try:
-        hcloud_client.firewalls.set_rules(firewall=hcloud_firewall, rules=hcloud_firewall_rules) # type: ignore
-        logging.info("Updated Hetzner Cloud firewall.")
-    except Exception as e:
-      logging.critical(e)
-      exit(code=1)
+      hcloud_client.firewalls.set_rules(firewall=hcloud_firewall, rules=hcloud_firewall_rules) # type: ignore
+      logging.info("Updated Hetzner Cloud firewall.")
+    except RemoteDisconnected as e:
+      logging.warning(e)
+      hcloud_client = hcc(token=hcloud_token)
+      hcloud_client.firewalls.set_rules(firewall=hcloud_firewall, rules=hcloud_firewall_rules) # type: ignore
+      logging.info("Updated Hetzner Cloud firewall.")
 
 
     # update dyndns record
